@@ -11,26 +11,20 @@ import Home
 import Profile
 
 public struct TabBarView: View {
-    @StateObject private var coordinator = TabBarCoordinator()
+    @EnvironmentObject var router: TabBarRouter
     
     public init() {}
     
     public var body: some View {
-        TabView(selection: $coordinator.selectedTab) {
+        TabView(selection: $router.selectedTab) {
             HomeView()
-                .tabItem {
-                    Label("Home", systemImage: "house")
-                }
-                .tag(TabBarCoordinator.Tab.home)
-            
+                .tabItem { Label("Home", systemImage: "house") }
+                .tag(TabBarRouter.Tab.home)
+                .environmentObject(router.homeRouter)
             ProfileView()
-                .tabItem {
-                    Label("Profile", systemImage: "person")
-                }
-                .tag(TabBarCoordinator.Tab.profile)
+                .tabItem { Label("Profile", systemImage: "person") }
+                .tag(TabBarRouter.Tab.profile)
+                .environmentObject(router.profileRouter)
         }
-        .environmentObject(coordinator)
-        .environmentObject(coordinator.homeCoordinator)
-        .environmentObject(coordinator.profileCoordinator)
     }
 }

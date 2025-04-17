@@ -1,19 +1,19 @@
 //
-//  HomeCoordinator.swift
-//  Home
+//  ProfileRouter.swift
+//  Profile
 //
 //  Created by Marcel Felipe Gottardi Anesi on 10/03/25.
 //
 
 import SwiftUI
 
-public class HomeCoordinator: ObservableObject {
+public class ProfileRouter: ObservableObject {
     @Published public var path = NavigationPath()
     
     public init() {}
     
-    public func pushToDetails() {
-        path.append(HomeDestination.details)
+    public func pushToSettings() {
+        path.append(AnyHashable(ProfileDestination.settings))
     }
     
     public func pop() {
@@ -23,6 +23,6 @@ public class HomeCoordinator: ObservableObject {
     }
 }
 
-public enum HomeDestination: Hashable {
-    case details
+public enum ProfileDestination: Hashable {
+    case settings
 }

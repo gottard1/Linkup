@@ -13,38 +13,40 @@ import Shared
 
 @MainActor
 class AuthStore: ObservableObject {
-    @AppStorage("isAuthenticated") private var isAuthenticated: Bool = AuthSession.isAuthenticated
-    
     @Published private(set) var isLoading = false
     @Published private(set) var errorMessage: String?
     
     private var cancellables = Set<AnyCancellable>()
     private let networkService: NetworkServiceProtocol
+    private let session: SessionManager
     
-    init(networkService: NetworkServiceProtocol = NetworkService()) {
+    init(
+        networkService: NetworkServiceProtocol = NetworkService(),
+        session: SessionManager
+    ) {
         self.networkService = networkService
+        self.session = session
     }
     
     func login(email: String, password: String) {
         isLoading = true
         errorMessage = nil
         
-        networkService.fetch(from: AuthEndpoints.login(email: email, password: password), responseType: LoginResponse.self)
+        networkService
+            .fetch(from: AuthEndpoints.login(email: email, password: password), responseType: LoginResponse.self)
             .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { completion in
-                self.isLoading = false
+            .sink(receiveCompletion: { [weak self] completion in
+                self?.isLoading = false
                 if case .failure(let error) = completion {
-                    self.errorMessage = "Erro: \(error.localizedDescription)"
+                    self?.errorMessage = "Erro: \(error.localizedDescription)"
                 }
-            }, receiveValue: { response in
-                AuthSession.authToken = response.token
-                self.isAuthenticated = true
+            }, receiveValue: { [weak self] response in
+                self?.session.login(token: response.token)
             })
             .store(in: &cancellables)
     }
     
     func logout() {
-        AuthSession.authToken = nil
-        isAuthenticated = false
+        session.logout()
     }
 }

@@ -9,7 +9,7 @@ import SwiftUI
 
 @main
 struct LinkupApp: App {
-    @StateObject private var appCoordinator = AppCoordinator()
+    @StateObject private var appCoordinator = AppRouter()
     
     var body: some Scene {
         WindowGroup {

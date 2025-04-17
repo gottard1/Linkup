@@ -14,12 +14,13 @@ let package = Package(
             targets: ["Home"]),
     ],
     dependencies: [
-        .package(path: "../../Core/Networking")
+        .package(path: "../../Core/Networking"),
+        .package(path: "../../Core/Shared")
     ],
     targets: [
         .target(
             name: "Home",
-            dependencies: ["Networking"]
+            dependencies: ["Networking", "Shared"]
         ),
         .testTarget(
             name: "HomeTests",
